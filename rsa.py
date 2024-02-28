@@ -1,4 +1,6 @@
 import random
+import os
+import pickle
 
 def gcd(a, b):
     while b != 0:
@@ -81,3 +83,45 @@ def decrypt(pk, encrypted_data):
         decrypted_data.append(pow(num, key, n))
 
     return decrypted_data
+
+
+
+if __name__ == '__main__':
+    p = int(input(" - Enter a prime number (17, 19, 23, etc): "))
+    q = int(input(" - Enter another prime number (Not one you entered above): "))
+    
+    print(" - Generating your public / private key-pairs now . . .")
+
+    public, private = generate_key_pair(p, q)
+
+    print(" - Your public key is ", public, " and your private key is ", private)
+
+    file_path = input(" - Enter the path to the file to encrypt with your public key: ")
+    file_dir, file_name = os.path.split(file_path)
+    encrypted_file_path = os.path.join(file_dir, "encrypted_" + file_name + '.rsa')
+    
+    encrypted_data = encrypt(public, file_path)
+
+    with open(encrypted_file_path, 'wb') as f:
+        pickle.dump(encrypted_data, f)
+
+    print(" - Your file has been encrypted and saved as:", encrypted_file_path)
+
+    decryption_choice = input(" - Do you want to decrypt the file? (yes/no): ").lower()
+    if decryption_choice == "yes":
+        with open(encrypted_file_path, 'rb') as f:
+            encrypted_data = pickle.load(f)
+        decrypted_data = decrypt(private, encrypted_data)
+        decrypted_file_path = input(" - Enter the path to save the decrypted file: ")
+
+        with open(decrypted_file_path, 'wb') as f:
+            for byte in decrypted_data:
+                f.write(byte.to_bytes(1, byteorder='big'))
+
+        print(" - Your file has been decrypted and saved as:", decrypted_file_path)
+    else:
+        print(" - Thank you. Exiting...")
+
+    print(" ")
+    print("============================================ END ==========================================================")
+    print("===========================================================================================================")
