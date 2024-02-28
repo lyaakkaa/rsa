@@ -59,3 +59,15 @@ def generate_key_pair(p, q):
     d = multiplicative_inverse(e, phi)
 
     return ((e, n), (d, n))
+
+def encrypt(pk, file_path):
+    key, n = pk
+    encrypted_data = []
+
+    with open(file_path, 'rb') as f:
+        byte = f.read(1)
+        while byte:
+            encrypted_data.append(pow(int.from_bytes(byte, byteorder='big'), key, n))
+            byte = f.read(1)
+
+    return encrypted_data
