@@ -40,3 +40,22 @@ def multiplicative_inverse(e, phi):
         return d + phi
 
 
+def generate_key_pair(p, q):
+    if not (is_prime(p) and is_prime(q)):
+        raise ValueError('Both numbers must be prime.')
+    elif p == q:
+        raise ValueError('p and q cannot be equal')
+
+    n = p * q
+    phi = (p-1) * (q-1)
+
+    e = random.randrange(1, phi)
+
+    g = gcd(e, phi)
+    while g != 1:
+        e = random.randrange(1, phi)
+        g = gcd(e, phi)
+
+    d = multiplicative_inverse(e, phi)
+
+    return ((e, n), (d, n))
