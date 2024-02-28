@@ -71,3 +71,13 @@ def encrypt(pk, file_path):
             byte = f.read(1)
 
     return encrypted_data
+
+
+def decrypt(pk, encrypted_data):
+    key, n = pk
+    decrypted_data = []
+
+    for num in encrypted_data:
+        decrypted_data.append(pow(num, key, n))
+
+    return decrypted_data
